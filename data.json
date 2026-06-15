@@ -1,6 +1,6 @@
 {
   "players": [
-	  "Henrik",
+    "Henrik",
     "Hendrik",
     "Inge",
     "Daniel",
@@ -9,11 +9,12 @@
   ],
   "games": [
     "Patches",
-    "Mini Soduku",
     "Zip",
-    "Queens",
+    "Mini Soduku",
     "Tango",
-    "Pinpoint",
-    "Crossclimb"
+    "Queens",
+    "Wend",
+    "Crossclimb",
+    "Pinpoint"
   ]
 }

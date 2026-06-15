@@ -1,1 +1,66 @@
-{}
+{
+  "Patches": {
+    "Henrik": "0:07",
+    "Hendrik": "0:12",
+    "Inge": "0:18",
+    "Daniel": "0:12",
+    "Kjetil": "0:12",
+    "Silje": "0:19"
+  },
+  "Mini Soduku": {
+    "Henrik": "0:31",
+    "Hendrik": "0:40",
+    "Inge": "0:41",
+    "Daniel": "0:28",
+    "Kjetil": "0:37",
+    "Silje": "0:22"
+  },
+  "Zip": {
+    "Henrik": "0:03",
+    "Hendrik": "0:07",
+    "Inge": "0:07",
+    "Daniel": "0:05",
+    "Kjetil": "0:10",
+    "Silje": "0:06"
+  },
+  "Queens": {
+    "Henrik": "0:16",
+    "Hendrik": "0:17",
+    "Inge": "0:14",
+    "Daniel": "0:27",
+    "Kjetil": "0:12",
+    "Silje": "0:57"
+  },
+  "Tango": {
+    "Henrik": "0:29",
+    "Hendrik": "1:19",
+    "Inge": "0:37",
+    "Daniel": "0:48",
+    "Kjetil": "1:00",
+    "Silje": "0:52"
+  },
+  "Pinpoint": {
+    "Henrik": "2",
+    "Hendrik": "5",
+    "Inge": "5",
+    "Daniel": "3",
+    "Kjetil": "1",
+    "Silje": "1"
+  },
+  "Crossclimb": {
+    "Henrik": "1:12",
+    "Hendrik": "1:03",
+    "Inge": "1:01",
+    "Daniel": "2:20",
+    "Kjetil": "1:05",
+    "Silje": "0:59"
+  },
+  "Wend": {
+    "Henrik": "1:20",
+    "Hendrik": "0:22",
+    "Inge": "1:55",
+    "Daniel": "1:55",
+    "Kjetil": "0:51",
+    "Silje": "2:09"
+  }
+}
