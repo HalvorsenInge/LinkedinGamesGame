@@ -186,27 +186,40 @@ def print_report(data, per_game_results, totals):
     for game in games:
         print(game)
         info = per_game_results.get(game, {})
-        parsed = info.get("parsed", {})
+        points = info.get("points", {})
         raw_map = info.get("raw", {})
-        is_steps = info.get("is_steps", False)
-        # print players in order (DNF last). Lower value is always better.
-        order = sorted(players, key=lambda x: (parsed.get(x) is None, parsed.get(x) if parsed.get(x) is not None else float('inf')))
-        for p in order:
+        sorted_game = sorted(players, key=lambda p: points.get(p, 0), reverse=True)
+        emojis = ["🥇", "🥈", "🥉"]
+
+        for i, p in enumerate(sorted_game[:3]):
+            score = points.get(p, 0)
+            score_disp = int(score) if float(score).is_integer() else score
             raw_val = raw_map.get(p)
-            disp = raw_val if raw_val is not None else "-"
-            print(f"{p} {disp}")
+            raw_display = "DNF" if raw_val in (None, "", "-", "-1", "DNF") or (isinstance(raw_val, str) and raw_val.strip().lower() == "dnf") else raw_val
+            print(f"{emojis[i]} {p} ({raw_display}): {score_disp}")
+
+        if len(sorted_game) > 3:
+            others = ", ".join(
+                f"{p} ({'DNF' if raw_map.get(p) in (None, '', '-', '-1', 'DNF') or (isinstance(raw_map.get(p), str) and raw_map.get(p).strip().lower() == 'dnf') else raw_map.get(p)}) {int(points.get(p, 0)) if float(points.get(p, 0)).is_integer() else points.get(p, 0)}"
+                for p in sorted_game[3:]
+            )
+            print(f"Others: {others}")
         print("\n")
 
     print("Totals")
     # sort totals descending
     sorted_totals = sorted(totals.items(), key=lambda x: x[1], reverse=True)
-    for p, v in sorted_totals:
-        # show whole numbers without .0
-        if v.is_integer():
-            vdisp = int(v)
-        else:
-            vdisp = v
-        print(f"{p} {vdisp}")
+    emojis = ["🥇", "🥈", "🥉"]
+
+    for i, (p, v) in enumerate(sorted_totals[:3]):
+        vdisp = int(v) if v.is_integer() else v
+        print(f"{emojis[i]} {p}: {vdisp}")
+
+    if len(sorted_totals) > 3:
+        others = ", ".join(
+            f"{p} {int(v) if v.is_integer() else v}" for p, v in sorted_totals[3:]
+        )
+        print(f"Others: {others}")
 
     # determine winners (highest total)
     if sorted_totals:
