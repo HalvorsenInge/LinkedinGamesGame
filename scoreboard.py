@@ -6,6 +6,14 @@ from datetime import datetime
 DATA_PATH = Path("data.json")
 RESULTS_PATH = Path("results.json")
 
+# Scoring table: sole winner takes WIN_POINTS, everyone else takes
+# WIN_POINTS - position (so joint winners 9, 2nd 8, 3rd 7, ...), never
+# dropping below MIN_FINISHER_POINTS. A DNF simply scores DNF_POINTS, so
+# finishing last is still worth more than not finishing.
+WIN_POINTS = 10
+MIN_FINISHER_POINTS = 1
+DNF_POINTS = 0.0
+
 
 def parse_time(val):
     # kept for backward compatibility but not used in new float-based comparison
@@ -117,12 +125,13 @@ def compute_scores(data, results):
         sorted_players = sorted(players, key=lambda x: (parsed[x] is None, parsed[x] if parsed[x] is not None else float('inf')))
 
         # Assign ranks and points using new rules:
-        # - Single winner (position 1 alone): 5 points
-        # - Joint winners (tie including position 1 with >1 players): 4 points each
-        # - 2nd place: 3 points
-        # - 3rd place: 2 points
-        # - All other non-DNF placings: 1 point
-        # - DNF: -1 point
+        # - Single winner (position 1 alone): 10 points
+        # - Joint winners (tie including position 1 with >1 players): 9 points each
+        # - Every other placing: 10 - position, i.e. 2nd -> 8, 3rd -> 7, 4th -> 6, ...
+        # - Never below MIN_FINISHER_POINTS, so a large field cannot score 0 or negative
+        # - DNF: 0 points
+        # A tie group consumes the positions it spans: two players tied for 2nd both
+        # take 8, and the next player sits at position 4 and takes 6.
         non_dnfs = [p for p in sorted_players if parsed[p] is not None]
         n = len(non_dnfs)
 
@@ -141,29 +150,22 @@ def compute_scores(data, results):
             min_pos = i + 1
             group_size = len(same_time_group)
             # decide points for the group based on the (minimum) position they occupy
-            if min_pos == 1:
-                if group_size == 1:
-                    grp_pts = 5.0
-                else:
-                    # joint winners
-                    grp_pts = 4.0
-            elif min_pos == 2:
-                grp_pts = 3.0
-            elif min_pos == 3:
-                grp_pts = 2.0
+            if min_pos == 1 and group_size == 1:
+                grp_pts = float(WIN_POINTS)
             else:
-                grp_pts = 1.0
+                # joint winners fall out of this as 10 - 1 = 9
+                grp_pts = float(max(WIN_POINTS - min_pos, MIN_FINISHER_POINTS))
 
             for gp in same_time_group:
                 points[gp] = grp_pts
                 ranks[gp] = min_pos
             i = j
 
-        # DNF players keep rank as None and get -1 points (punished)
+        # DNF players keep rank as None and score DNF_POINTS
         for p in players:
             if parsed[p] is None:
                 ranks[p] = None
-                points[p] = -1.0
+                points[p] = DNF_POINTS
 
         for p in players:
             totals[p] += points[p]
