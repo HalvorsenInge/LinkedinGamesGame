@@ -179,6 +179,16 @@ def show_scoreboard():
         print("Failed to show scoreboard:", e)
 
 
+def start_new_week():
+    import scoreboard
+    confirm = input("Start a new week from today? Weekly scores restart at 0 (today's results count). (y/N): ").strip().lower()
+    if confirm == "y":
+        day = scoreboard.start_new_week()
+        print(f"New week started {day.isoformat()}.")
+    else:
+        print("Aborted.")
+
+
 def menu():
     while True:
         print("\nLinkedIn Game Manager")
@@ -189,7 +199,8 @@ def menu():
         print("5. Remove game")
         print("6. Show scoreboard")
         print("7. Reset results")
-        print("8. Exit")
+        print("8. Start new week")
+        print("9. Exit")
         choice = input("Choose: ").strip()
         if choice == "1":
             register_results()
@@ -206,6 +217,8 @@ def menu():
         elif choice == "7":
             reset_results()
         elif choice == "8":
+            start_new_week()
+        elif choice == "9":
             print("Goodbye")
             sys.exit(0)
         else:

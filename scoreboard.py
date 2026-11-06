@@ -1,7 +1,7 @@
 import json
 import sys
 from pathlib import Path
-from datetime import datetime
+from datetime import date, timedelta
 
 DATA_PATH = Path("data.json")
 RESULTS_PATH = Path("results.json")
@@ -181,7 +181,7 @@ def compute_scores(data, results):
     return per_game_results, totals
 
 
-def print_report(data, per_game_results, totals):
+def print_report(data, per_game_results, totals, weekly=None):
     players = data.get("players", [])
     games = data.get("games", [])
 
@@ -209,21 +209,10 @@ def print_report(data, per_game_results, totals):
         print("\n")
 
     print("Totals")
-    # sort totals descending
-    sorted_totals = sorted(totals.items(), key=lambda x: x[1], reverse=True)
-    emojis = ["🥇", "🥈", "🥉"]
-
-    for i, (p, v) in enumerate(sorted_totals[:3]):
-        vdisp = int(v) if v.is_integer() else v
-        print(f"{emojis[i]} {p}: {vdisp}")
-
-    if len(sorted_totals) > 3:
-        others = ", ".join(
-            f"{p} {int(v) if v.is_integer() else v}" for p, v in sorted_totals[3:]
-        )
-        print(f"Others: {others}")
+    _print_ranking(totals)
 
     # determine winners (highest total)
+    sorted_totals = sorted(totals.items(), key=lambda x: x[1], reverse=True)
     if sorted_totals:
         top_score = sorted_totals[0][1]
         winners = [p for p, s in sorted_totals if s == top_score]
@@ -232,9 +221,91 @@ def print_report(data, per_game_results, totals):
         else:
             print(f"\nWinners (tie): {', '.join(winners)}")
 
+    if weekly is None:
+        weekly = compute_weekly(data, totals)
+    print("\n<b>Weekly:</b>")
+    _print_ranking(weekly)
+
+
+def _fmt_points(v):
+    return int(v) if float(v).is_integer() else v
+
+
+def _print_ranking(scores):
+    """Print a points mapping as top 3 with medals followed by an Others line."""
+    ranked = sorted(scores.items(), key=lambda x: x[1], reverse=True)
+    emojis = ["🥇", "🥈", "🥉"]
+
+    for i, (p, v) in enumerate(ranked[:3]):
+        print(f"{emojis[i]} {p}: {_fmt_points(v)}")
+
+    if len(ranked) > 3:
+        others = ", ".join(f"{p} {_fmt_points(v)}" for p, v in ranked[3:])
+        print(f"Others: {others}")
+
+
+def _to_points(val):
+    """Snapshot value -> float. "-", "DNF", empty or anything unparsable counts as 0."""
+    try:
+        return float(val)
+    except (TypeError, ValueError):
+        return 0.0
+
+
+def _snapshot_date(key):
+    """Snapshot key ("2026-11-06") -> date, or None for old weekday-only keys."""
+    try:
+        return date.fromisoformat(key)
+    except (TypeError, ValueError):
+        return None
+
+
+def compute_weekly(data, totals, path=None, today=None):
+    """Sum each player's saved daily snapshots for the current week (Monday-Sunday).
+
+    Only snapshots dated in the same week as ``today`` count, so the first
+    snapshot after a weekend (or a longer break) starts a new week. A week
+    started manually with start_new_week() counts from that day instead,
+    until the next Monday. Today's
+    snapshot is replaced by the live ``totals`` so the weekly figure includes
+    today even before it has been saved. A day where a player has no entry,
+    or an entry like "-", counts as 0.
+    """
+    today = today or date.today()
+    week_start = today - timedelta(days=today.weekday())
+    manual_start = get_manual_week_start()
+    if manual_start and week_start < manual_start <= today:
+        week_start = manual_start
+    scores = load_scores(path or SCORES_PATH)
+    scores[today.isoformat()] = totals
+    weekly = {p: 0.0 for p in data.get("players", [])}
+    for key, snap in scores.items():
+        d = _snapshot_date(key)
+        if d is None or not (week_start <= d <= today):
+            continue
+        for p in weekly:
+            weekly[p] += _to_points(snap.get(p))
+    return weekly
+
 
 SCORES_PATH = Path("scores.json")
 SUMMARY_PATH = Path("scores_summary.json")
+WEEK_PATH = Path("week.json")
+
+
+def get_manual_week_start(path=WEEK_PATH):
+    """Date a new week was started manually, or None."""
+    try:
+        return date.fromisoformat(json.loads(path.read_text())["week_start"])
+    except Exception:
+        return None
+
+
+def start_new_week(day=None, path=WEEK_PATH):
+    """Start a new weekly score from ``day`` (default today, which is included)."""
+    day = day or date.today()
+    path.write_text(json.dumps({"week_start": day.isoformat()}, indent=2))
+    return day
 
 
 def load_scores(path=SCORES_PATH):
@@ -248,9 +319,8 @@ def load_scores(path=SCORES_PATH):
 
 def save_scores_snapshot(totals, path=SCORES_PATH, label=None):
     scores = load_scores(path)
-    weekday = datetime.utcnow().strftime("%A")
-    key = weekday
-    # store numeric values as numbers; overwrite any existing snapshot for this weekday
+    key = date.today().isoformat()
+    # store numeric values as numbers; overwrite any existing snapshot for today
     scores[key] = {p: (totals[p] if isinstance(totals[p], (int, float)) else totals[p]) for p in totals}
     path.write_text(json.dumps(scores, indent=2))
     return key

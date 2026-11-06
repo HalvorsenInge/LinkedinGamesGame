@@ -49,8 +49,8 @@ This file summarizes the core rules, data formats, scoring, and CLI usage for th
 
 9. Running the project
 - Run the interactive manager: python app.py
-- Print scoreboard and persist a weekday-named snapshot: python scoreboard.py
-  - The run saves current totals to scores.json under the weekday key (e.g., "Monday"). Running again on the same weekday overwrites that snapshot; scores_summary.json is updated with aggregated stats.
+- Print scoreboard and persist a dated snapshot: python scoreboard.py
+  - The run saves current totals to scores.json under today's date (e.g., "2026-11-06"). Running again on the same day overwrites that snapshot; scores_summary.json is updated with aggregated stats.
 - Run scoring without saving snapshot: python -c "import scoreboard; scoreboard.main(save_snapshot=False)"
 - Run scoring via Python: python -c "import scoreboard; scoreboard.main()"
 
@@ -62,3 +62,9 @@ This file summarizes the core rules, data formats, scoring, and CLI usage for th
 - If parsing or scoring rules change, update parse_value and compute_scores and add tests if possible.
 
 This summary is intended as a quick reference. For implementation details, open app.py and scoreboard.py.
+
+12. Weekly score
+- The report ends with a "<b>Weekly:</b>" ranking: each player's daily totals summed over the current week (Monday–Sunday), including today's live totals.
+- Only snapshots dated in the current week count, so the first day after a weekend or a longer break starts a new week.
+- A missing day, or a "-"/"DNF"/non-numeric entry, counts as 0.
+- To start a new week early, use "Start new week" (app.py menu option 8, or the Streamlit Scoreboard tab). It writes today's date to week.json; Weekly then counts from today (today included) until the next Monday, when the normal Monday–Sunday week takes over again.

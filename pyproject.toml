@@ -1,0 +1,19 @@
+[project]
+name = "linkedingamesgame"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "bouvet-inge-halvorsen", email = "inge.halvorsen@bouvet.no" }
+]
+requires-python = ">=3.12"
+dependencies = [
+    "app>=0.0.1",
+]
+
+[project.scripts]
+linkedingamesgame = "linkedingamesgame:main"
+
+[build-system]
+requires = ["uv_build>=0.13.5,<0.14.0"]
+build-backend = "uv_build"

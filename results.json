@@ -1,74 +1,74 @@
 {
+  "Zip": {
+    "Henrik": "0:09",
+    "Hendrik": "0:10",
+    "Inge": "0:16",
+    "Daniel": "0:14",
+    "Silje": "0:10",
+    "Werner": "0:13",
+    "Johan": "0:12"
+  },
   "Wend": {
-    "Henrik": "0:46",
-    "Hendrik": "0:56",
-    "Inge": "3:02",
-    "Daniel": "0:34",
-    "Kjetil": "0:59",
-    "Silje": "1:19",
-    "Werner": "0:58"
+    "Henrik": "1:35",
+    "Hendrik": "1:29",
+    "Inge": "1:04",
+    "Daniel": "0:44",
+    "Silje": "0:30",
+    "Werner": "0:38",
+    "Johan": "0:21"
   },
   "Patches": {
-    "Henrik": "0:18",
-    "Hendrik": "0:09",
-    "Inge": "0:31",
-    "Daniel": "0:08",
-    "Kjetil": "0:24",
-    "Silje": "0:12",
-    "Werner": "0:39"
-  },
-  "Zip": {
-    "Henrik": "0:19",
-    "Hendrik": "0:09",
-    "Inge": "0:29",
-    "Daniel": "0:33",
-    "Kjetil": "0:22",
-    "Silje": "0:24",
-    "Werner": "0:26"
+    "Henrik": "0:08",
+    "Hendrik": "0:18",
+    "Inge": "1:01",
+    "Daniel": "0:16",
+    "Silje": "0:26",
+    "Werner": "0:11",
+    "Johan": "0:20"
   },
   "Mini Soduku": {
-    "Henrik": "1:54",
-    "Hendrik": "1:14",
-    "Inge": "1:45",
-    "Daniel": "2:01",
-    "Kjetil": "-",
-    "Silje": "0:34",
-    "Werner": "1:16"
+    "Henrik": "0:45",
+    "Hendrik": "1:33",
+    "Inge": "1:51",
+    "Daniel": "1:08",
+    "Silje": "0:52",
+    "Werner": "1:17",
+    "Johan": "1:17"
   },
   "Tango": {
-    "Henrik": "0:34",
-    "Hendrik": "0:55",
-    "Inge": "0:46",
-    "Daniel": "0:37",
-    "Kjetil": "-",
-    "Silje": "0:37",
-    "Werner": "1:20"
+    "Henrik": "0:23",
+    "Hendrik": "1:20",
+    "Inge": "1:33",
+    "Daniel": "0:40",
+    "Silje": "0:51",
+    "Werner": "1:41",
+    "Johan": "5:43"
   },
   "Queens": {
-    "Henrik": "0:59",
-    "Hendrik": "2:38",
-    "Inge": "1:52",
-    "Daniel": "0:47",
-    "Kjetil": "1:21",
-    "Silje": "0:39",
-    "Werner": "1:17"
+    "Henrik": "0:42",
+    "Hendrik": "1:08",
+    "Inge": "1:01",
+    "Daniel": "0:24",
+    "Silje": "1:51",
+    "Werner": "1:33",
+    "Johan": "0:44"
   },
   "Crossclimb": {
-    "Henrik": "2:20",
-    "Hendrik": "2:09",
-    "Inge": "1:35",
-    "Daniel": "1:39",
-    "Kjetil": "-",
-    "Silje": "1:25",
-    "Werner": "2:29"
+    "Henrik": "1:05",
+    "Hendrik": "0:44",
+    "Inge": "0:48",
+    "Daniel": "0:50",
+    "Silje": "0:46",
+    "Werner": "0:54",
+    "Johan": "2:17"
   },
   "Pinpoint": {
-    "Henrik": "-",
-    "Hendrik": "-",
-    "Inge": "5",
-    "Daniel": "5",
-    "Kjetil": "-",
-    "Silje": "3",
-    "Werner": "-"
+    "Henrik": "3",
+    "Hendrik": "4",
+    "Inge": "3",
+    "Daniel": "2",
+    "Silje": "2",
+    "Werner": "4",
+    "Johan": "2"
   }
 }

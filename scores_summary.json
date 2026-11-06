@@ -1,50 +1,58 @@
 {
   "Henrik": {
-    "total": 27.0,
-    "count": 2,
-    "best": 14.0,
+    "total": 128.0,
+    "count": 3,
+    "best": 61.0,
     "worst": 13.0,
     "last_snapshot": "Wednesday",
-    "average": 13.5
+    "average": 42.666666666666664
   },
   "Hendrik": {
-    "total": 14.0,
-    "count": 1,
-    "best": 14.0,
-    "worst": 14.0,
-    "last_snapshot": "Monday",
-    "average": 14.0
+    "total": 93.0,
+    "count": 2,
+    "best": 47.0,
+    "worst": 46.0,
+    "last_snapshot": "Thursday",
+    "average": 46.5
   },
   "Inge": {
-    "total": 25.0,
-    "count": 2,
-    "best": 13.0,
-    "worst": 12.0,
+    "total": 103.0,
+    "count": 3,
+    "best": 48.0,
+    "worst": 13.0,
     "last_snapshot": "Wednesday",
-    "average": 12.5
+    "average": 34.333333333333336
   },
   "Daniel": {
-    "total": 37.0,
-    "count": 2,
-    "best": 21.0,
+    "total": 149.0,
+    "count": 3,
+    "best": 68.0,
     "worst": 16.0,
     "last_snapshot": "Wednesday",
-    "average": 18.5
-  },
-  "Kjetil": {
-    "total": 17.0,
-    "count": 1,
-    "best": 17.0,
-    "worst": 17.0,
-    "last_snapshot": "Monday",
-    "average": 17.0
+    "average": 49.666666666666664
   },
   "Silje": {
+    "total": 116.0,
+    "count": 2,
+    "best": 59.0,
+    "worst": 57.0,
+    "last_snapshot": "Thursday",
+    "average": 58.0
+  },
+  "Werner": {
     "total": 16.0,
-    "count": 1,
+    "count": 2,
     "best": 16.0,
-    "worst": 16.0,
-    "last_snapshot": "Monday",
-    "average": 16.0
+    "worst": 0.0,
+    "last_snapshot": "Thursday",
+    "average": 8.0
+  },
+  "Johan": {
+    "total": 104.0,
+    "count": 2,
+    "best": 53.0,
+    "worst": 51.0,
+    "last_snapshot": "Thursday",
+    "average": 52.0
   }
 }
