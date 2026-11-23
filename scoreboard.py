@@ -5,6 +5,7 @@ from datetime import date, timedelta
 
 DATA_PATH = Path("data.json")
 RESULTS_PATH = Path("results.json")
+HINTS_PATH = Path("hints.json")
 
 # Scoring table: sole winner takes WIN_POINTS, everyone else takes
 # WIN_POINTS - position (so joint winners 9, 2nd 8, 3rd 7, ...), never
@@ -13,6 +14,76 @@ RESULTS_PATH = Path("results.json")
 WIN_POINTS = 10
 MIN_FINISHER_POINTS = 1
 DNF_POINTS = 0.0
+# Finishing with hints costs HINT_PENALTY points, but never below
+# MIN_FINISHER_POINTS, so finishing with hints always beats a DNF.
+# The player keeps their place by time, so nobody else's points change.
+HINT_PENALTY = 3.0
+
+
+def is_steps_game(game):
+    """Pinpoint is scored in attempts/guesses rather than time."""
+    return str(game).strip().lower() == "pinpoint"
+
+
+def is_dnf_value(val):
+    return val is None or str(val).strip().lower() in ("", "-", "-1", "dnf")
+
+
+def normalize_result(val, is_steps=False):
+    """Tidy a typed result into the stored form. Returns (value, error).
+
+    Empty stays "" and any DNF marker becomes "-". Attempts become a whole
+    number. Times become m:ss and also accept "65" (seconds), "1.05", "1,05"
+    and "1 05". error is None when the input was understood.
+    """
+    s = "" if val is None else str(val).strip().replace('\u00A0', '').replace('：', ':')
+    if s == "":
+        return "", None
+    if is_dnf_value(s):
+        return "-", None
+    if is_steps:
+        try:
+            n = float(s.replace(',', '.'))
+        except ValueError:
+            return None, f"'{s}' is not a number of attempts"
+        if n < 1 or not n.is_integer():
+            return None, f"'{s}' is not a number of attempts"
+        return str(int(n)), None
+
+    for sep in ('.', ',', ' '):
+        s = s.replace(sep, ':')
+    try:
+        parts = [int(x) for x in s.split(':')]
+    except ValueError:
+        return None, f"'{val}' is not a time (use m:ss)"
+    if any(x < 0 for x in parts):
+        return None, f"'{val}' is not a time (use m:ss)"
+    if len(parts) == 1:
+        m, sec = divmod(parts[0], 60)
+        return f"{m}:{sec:02d}", None
+    if len(parts) == 2 and parts[1] < 60:
+        return f"{parts[0]}:{parts[1]:02d}", None
+    if len(parts) == 3 and parts[1] < 60 and parts[2] < 60:
+        return f"{parts[0]}:{parts[1]:02d}:{parts[2]:02d}", None
+    return None, f"'{val}' is not a time (use m:ss)"
+
+
+def load_hints(path=HINTS_PATH):
+    """{game: {player: True}} for every result where hints were used."""
+    try:
+        return json.loads(path.read_text()) if path.exists() and path.stat().st_size > 0 else {}
+    except json.JSONDecodeError:
+        return {}
+
+
+def save_hints(hints, path=HINTS_PATH):
+    """Store only the results where hints were used."""
+    clean = {g: {p: True for p, used in ps.items() if used} for g, ps in hints.items()}
+    path.write_text(json.dumps({g: ps for g, ps in clean.items() if ps}, indent=2))
+
+
+def used_hints(hints, game, player):
+    return bool((hints or {}).get(game, {}).get(player))
 
 
 def parse_time(val):
@@ -92,7 +163,7 @@ def load_files(data_path=DATA_PATH, results_path=RESULTS_PATH):
     return data, results
 
 
-def compute_scores(data, results):
+def compute_scores(data, results, hints=None):
     players = data.get("players", [])
     games = data.get("games", [])
 
@@ -104,7 +175,7 @@ def compute_scores(data, results):
         parsed = {}
         raw_inputs = {}
         # special-case: Pinpoint is counted in steps where lower is better and values are numeric
-        is_steps = str(game).strip().lower() == "pinpoint"
+        is_steps = is_steps_game(game)
         for p in players:
             raw = game_results.get(p)
             raw_s = None if raw is None else str(raw).strip()
@@ -167,6 +238,12 @@ def compute_scores(data, results):
                 ranks[p] = None
                 points[p] = DNF_POINTS
 
+        # Hints cost points but not position
+        hinted = {p: used_hints(hints, game, p) for p in players}
+        for p in players:
+            if hinted[p] and parsed[p] is not None:
+                points[p] = max(points[p] - HINT_PENALTY, MIN_FINISHER_POINTS)
+
         for p in players:
             totals[p] += points[p]
 
@@ -175,6 +252,7 @@ def compute_scores(data, results):
             "raw": raw_inputs,
             "ranks": ranks,
             "points": points,
+            "hints": hinted,
             "is_steps": is_steps
         }
 
@@ -190,20 +268,22 @@ def print_report(data, per_game_results, totals, weekly=None):
         info = per_game_results.get(game, {})
         points = info.get("points", {})
         raw_map = info.get("raw", {})
+        hint_map = info.get("hints", {})
         sorted_game = sorted(players, key=lambda p: points.get(p, 0), reverse=True)
         emojis = ["🥇", "🥈", "🥉"]
 
-        for i, p in enumerate(sorted_game[:3]):
-            score = points.get(p, 0)
-            score_disp = int(score) if float(score).is_integer() else score
+        def result_display(p):
             raw_val = raw_map.get(p)
-            raw_display = "DNF" if raw_val in (None, "", "-", "-1", "DNF") or (isinstance(raw_val, str) and raw_val.strip().lower() == "dnf") else raw_val
-            print(f"{emojis[i]} {p} ({raw_display}): {score_disp}")
+            if is_dnf_value(raw_val):
+                return "DNF"
+            return f"{raw_val} 💡" if hint_map.get(p) else raw_val
+
+        for i, p in enumerate(sorted_game[:3]):
+            print(f"{emojis[i]} {p} ({result_display(p)}): {_fmt_points(points.get(p, 0))}")
 
         if len(sorted_game) > 3:
             others = ", ".join(
-                f"{p} ({'DNF' if raw_map.get(p) in (None, '', '-', '-1', 'DNF') or (isinstance(raw_map.get(p), str) and raw_map.get(p).strip().lower() == 'dnf') else raw_map.get(p)}) {int(points.get(p, 0)) if float(points.get(p, 0)).is_integer() else points.get(p, 0)}"
-                for p in sorted_game[3:]
+                f"{p} ({result_display(p)}) {_fmt_points(points.get(p, 0))}" for p in sorted_game[3:]
             )
             print(f"Others: {others}")
         print("\n")
@@ -317,13 +397,22 @@ def load_scores(path=SCORES_PATH):
     return {}
 
 
-def save_scores_snapshot(totals, path=SCORES_PATH, label=None):
+def save_scores_snapshot(totals, path=SCORES_PATH, label=None, day=None):
     scores = load_scores(path)
-    key = date.today().isoformat()
-    # store numeric values as numbers; overwrite any existing snapshot for today
+    key = (day or date.today()).isoformat()
+    # store numeric values as numbers; overwrite any existing snapshot for that day
     scores[key] = {p: (totals[p] if isinstance(totals[p], (int, float)) else totals[p]) for p in totals}
     path.write_text(json.dumps(scores, indent=2))
     return key
+
+
+def delete_scores_snapshot(day, path=SCORES_PATH):
+    """Remove one day's snapshot. Returns True if it existed."""
+    scores = load_scores(path)
+    if scores.pop(day.isoformat(), None) is None:
+        return False
+    path.write_text(json.dumps(scores, indent=2))
+    return True
 
 
 def summarize_scores(path=SCORES_PATH, out_path=SUMMARY_PATH):
@@ -352,11 +441,11 @@ def summarize_scores(path=SCORES_PATH, out_path=SUMMARY_PATH):
 
 def main(save_snapshot=True):
     data, results = load_files()
-    per_game_results, totals = compute_scores(data, results)
+    per_game_results, totals = compute_scores(data, results, load_hints())
     print_report(data, per_game_results, totals)
     if save_snapshot:
-        key = save_scores_snapshot(totals)
-        summarize_scores()
+        import db
+        key = db.save_day(data, results, load_hints())
         print(f"Saved scores snapshot as '{key}' and updated summary ({SUMMARY_PATH}).")
 
 

@@ -1,74 +1,74 @@
 {
   "Zip": {
-    "Henrik": "0:09",
-    "Hendrik": "0:10",
-    "Inge": "0:16",
-    "Daniel": "0:14",
-    "Silje": "0:10",
-    "Werner": "0:13",
-    "Johan": "0:12"
+    "Henrik": "0:44",
+    "Hendrik": "0:25",
+    "Inge": "2:28",
+    "Daniel": "0:20",
+    "Silje": "-",
+    "Werner": "1:15",
+    "Johan": "0:29"
   },
   "Wend": {
-    "Henrik": "1:35",
-    "Hendrik": "1:29",
-    "Inge": "1:04",
-    "Daniel": "0:44",
-    "Silje": "0:30",
-    "Werner": "0:38",
-    "Johan": "0:21"
+    "Henrik": "2:16",
+    "Hendrik": "0:54",
+    "Inge": "2:16",
+    "Daniel": "0:54",
+    "Silje": "-",
+    "Werner": "0:34",
+    "Johan": "0:54"
   },
   "Patches": {
-    "Henrik": "0:08",
-    "Hendrik": "0:18",
-    "Inge": "1:01",
-    "Daniel": "0:16",
-    "Silje": "0:26",
-    "Werner": "0:11",
-    "Johan": "0:20"
+    "Henrik": "0:20",
+    "Hendrik": "0:21",
+    "Inge": "0:49",
+    "Daniel": "0:32",
+    "Silje": "-",
+    "Werner": "0:55",
+    "Johan": "0:21"
   },
   "Mini Soduku": {
-    "Henrik": "0:45",
-    "Hendrik": "1:33",
-    "Inge": "1:51",
-    "Daniel": "1:08",
-    "Silje": "0:52",
-    "Werner": "1:17",
-    "Johan": "1:17"
+    "Henrik": "1:53",
+    "Hendrik": "1:00",
+    "Inge": "2:20",
+    "Daniel": "1:56",
+    "Silje": "-",
+    "Werner": "1:43",
+    "Johan": "1:24"
   },
   "Tango": {
-    "Henrik": "0:23",
-    "Hendrik": "1:20",
-    "Inge": "1:33",
-    "Daniel": "0:40",
-    "Silje": "0:51",
-    "Werner": "1:41",
-    "Johan": "5:43"
+    "Henrik": "0:22",
+    "Hendrik": "0:48",
+    "Inge": "1:13",
+    "Daniel": "0:30",
+    "Silje": "-",
+    "Werner": "1:18",
+    "Johan": "0:40"
   },
   "Queens": {
-    "Henrik": "0:42",
-    "Hendrik": "1:08",
-    "Inge": "1:01",
-    "Daniel": "0:24",
-    "Silje": "1:51",
-    "Werner": "1:33",
-    "Johan": "0:44"
+    "Henrik": "1:54",
+    "Hendrik": "1:19",
+    "Inge": "1:59",
+    "Daniel": "0:31",
+    "Silje": "-",
+    "Werner": "1:53",
+    "Johan": "0:34"
   },
   "Crossclimb": {
-    "Henrik": "1:05",
-    "Hendrik": "0:44",
-    "Inge": "0:48",
-    "Daniel": "0:50",
-    "Silje": "0:46",
-    "Werner": "0:54",
-    "Johan": "2:17"
+    "Henrik": "0:39",
+    "Hendrik": "1:07",
+    "Inge": "2:17",
+    "Daniel": "0:54",
+    "Silje": "-",
+    "Werner": "1:26",
+    "Johan": "4:07"
   },
   "Pinpoint": {
     "Henrik": "3",
-    "Hendrik": "4",
+    "Hendrik": "3",
     "Inge": "3",
-    "Daniel": "2",
-    "Silje": "2",
-    "Werner": "4",
+    "Daniel": "1",
+    "Silje": "-",
+    "Werner": "3",
     "Johan": "2"
   }
 }
